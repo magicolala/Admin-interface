@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductCrudController extends AbstractCrudController
 {
+
     public const ACTION_DUPLICATE = 'duplicate';
     public const PRODUCTS_BASE_PATH = 'upload/images/products';
     public const PRODUCTS_UPLOAD_DIR = 'public/upload/images/products';
@@ -71,7 +72,17 @@ class ProductCrudController extends AbstractCrudController
         if (!$entityInstance instanceof Product) return;
 
         $entityInstance->setCreatedAt(new \DateTimeImmutable());
+
         parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Product) return;
+
+        $entityInstance->setUpdatedAt(new \DateTimeImmutable());
+
+        parent::updateEntity($entityManager, $entityInstance);
     }
 
     public function duplicateProduct(
@@ -94,5 +105,4 @@ class ProductCrudController extends AbstractCrudController
 
         return $this->redirect($url);
     }
-
 }
