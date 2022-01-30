@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -58,31 +59,17 @@ class ProductCrudController extends AbstractCrudController
             BooleanField::new('isActive'),
             DateTimeField::new('createdAt')->hideOnForm(),
             DateTimeField::new('updatedAt')->hideOnForm(),
-            AssociationField::new('category'),
+
+            AssociationField::new('category')->setQueryBuilder(function (QueryBuilder $queryBuilder) {
+                $queryBuilder->where('entity.isActive = true');
+            }),
+
             ImageField::new('image')
                 ->setBasePath(self::PRODUCTS_BASE_PATH)
                 ->setUploadDir(self::PRODUCTS_UPLOAD_DIR)
                 ->setSortable(false)
             ,
         ];
-    }
-
-    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        if (!$entityInstance instanceof Product) return;
-
-        $entityInstance->setCreatedAt(new \DateTimeImmutable());
-
-        parent::persistEntity($entityManager, $entityInstance);
-    }
-
-    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        if (!$entityInstance instanceof Product) return;
-
-        $entityInstance->setUpdatedAt(new \DateTimeImmutable());
-
-        parent::updateEntity($entityManager, $entityInstance);
     }
 
     public function duplicateProduct(
@@ -105,4 +92,25 @@ class ProductCrudController extends AbstractCrudController
 
         return $this->redirect($url);
     }
+
+    /*
+    public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Product) return;
+
+        $entityInstance->setCreatedAt(new \DateTimeImmutable());
+
+        parent::persistEntity($entityManager, $entityInstance);
+    }
+
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Product) return;
+
+        $entityInstance->setUpdatedAt(new \DateTimeImmutable());
+
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+    */
+
 }

@@ -28,6 +28,18 @@ class CategoryCrudController extends AbstractCrudController
         ];
     }
 
+    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        if (!$entityInstance instanceof Category) return;
+
+        foreach ($entityInstance->getProducts() as $product) {
+            $entityManager->remove($product);
+        }
+
+        parent::deleteEntity($entityManager, $entityInstance);
+    }
+
+    /*
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if (!$entityInstance instanceof Category) return;
@@ -45,15 +57,5 @@ class CategoryCrudController extends AbstractCrudController
 
         parent::updateEntity($entityManager, $entityInstance);
     }
-
-    public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
-    {
-        if (!$entityInstance instanceof Category) return;
-
-        foreach ($entityInstance->getProducts() as $product) {
-            $entityManager->remove($product);
-        }
-
-        parent::deleteEntity($entityManager, $entityInstance);
-    }
+    */
 }
