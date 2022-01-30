@@ -118,4 +118,9 @@ class Category
 
         return $this;
     }
+
+    #[Pure]
+    public function __toString() {
+        return $this->getName();
+    }
 }
